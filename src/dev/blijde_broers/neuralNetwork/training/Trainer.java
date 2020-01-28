@@ -14,8 +14,8 @@ public class Trainer {
 	public Trainer() {
 		network = new FeedForwardNN(28 * 28, 32, 32, 16, 10);
 		mnistReader = new MNISTReader(
-				"C:/Users/Heiko Ribberink/eclipse-workspace/Digit recognition AI/src/res/datasets/train-images.idx3-ubyte",
-				"C:/Users/Heiko Ribberink/eclipse-workspace/Digit recognition AI/src/res/datasets/train-labels.idx1-ubyte");
+				"src/res/datasets/train-images.idx3-ubyte",
+				"src/res/datasets/train-labels.idx1-ubyte");
 		mnistReader.readAll();
 	}
 	

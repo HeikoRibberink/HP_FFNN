@@ -15,6 +15,7 @@ public class Neuron {
 	}
 	
 	public Neuron(double bias) {
+		// Hallo heiko
 		this.bias = bias;
 	}
 	

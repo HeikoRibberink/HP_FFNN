@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 
 import dev.blijde_broers.input.KeyManager;
@@ -17,6 +18,8 @@ public class Game implements Runnable {
 	private LoadingScreen loadingScreen;
 	private boolean running = false;
 	private Trainer trainer;
+	
+	private static final double[] LEARNING_RATE_OPTIONS = {0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001};
 
 	@SuppressWarnings("unused")
 	private int fps;
@@ -70,9 +73,25 @@ public class Game implements Runnable {
 
 	public void setup() {
 	}
+	
+	private boolean readyForChangeKey = true;
+	private int currentLearningRateIndex = 8;
 
 	public void tick() {
 		toggleStates();
+		if (readyForChangeKey) {
+			if (KeyManager.pressed[KeyEvent.VK_7]) {
+				currentLearningRateIndex = Math.max(0, currentLearningRateIndex - 1);
+				trainer.network.learningRate = LEARNING_RATE_OPTIONS[currentLearningRateIndex];
+				readyForChangeKey = false;
+			}
+			if (KeyManager.pressed[KeyEvent.VK_8]) {
+				currentLearningRateIndex = Math.min(LEARNING_RATE_OPTIONS.length - 1, currentLearningRateIndex + 1);
+				trainer.network.learningRate = LEARNING_RATE_OPTIONS[currentLearningRateIndex];
+				readyForChangeKey = false;
+			}
+		}
+		if (!KeyManager.pressed[KeyEvent.VK_7] && !KeyManager.pressed[KeyEvent.VK_8]) readyForChangeKey = true;
 		if(!KeyManager.pressed[KeyEvent.VK_SPACE]) {
 			if(trainer.mnistReader.currentIndex > trainer.currentTrainingIndex) trainer.trainNext();
 		}
@@ -101,6 +120,8 @@ public class Game implements Runnable {
 //			g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer), 700, 100);
 			g.drawString(Double.toString(trainer.error), 50, 40);
 			g.drawString(Integer.toString(trainer.currentTrainingIndex), 200, 40);
+			DecimalFormat df = new DecimalFormat("#.#####");
+			g.drawString(df.format(LEARNING_RATE_OPTIONS[currentLearningRateIndex]), 300, 40);
 			
 		}
 		g.setColor(Color.white);

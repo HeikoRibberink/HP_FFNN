@@ -7,7 +7,7 @@ public class FeedForwardNN implements NeuralNetwork {
 	// The amount of layers in the network structure must be more than 1
 	// The first layer of the structure is just used for inputs, nothing else
 	public ArrayList<ArrayList<Neuron>> structure;
-	public double learningRate = .001;
+	public double learningRate = .0001;
 	public int[] structureLayout;
 
 	public FeedForwardNN(int... structureLayout) {
@@ -17,7 +17,7 @@ public class FeedForwardNN implements NeuralNetwork {
 		for (int layerID = 0; layerID < structureLayout.length; layerID++) {
 			structure.add(new ArrayList<Neuron>());
 			for (int neuronID = 0; neuronID < structureLayout[layerID]; neuronID++) {
-				Neuron neuron = new Neuron((Math.random() - 0.5) * 5);
+				Neuron neuron = new Neuron((Math.random() - 0.5) * 2);
 				
 				if (layerID != 0)
 					neuron.in = new Synapse[structureLayout[layerID - 1]];
@@ -35,7 +35,7 @@ public class FeedForwardNN implements NeuralNetwork {
 				Neuron inputNeuron = layer.get(inputNeuronID);
 				for (int outputNeuronID = 0; outputNeuronID < nextLayer.size(); outputNeuronID++) {
 					Neuron outputNeuron = nextLayer.get(outputNeuronID);
-					Synapse synapse = new Synapse(inputNeuron, (Math.random() - 0.5) * 5, outputNeuron);
+					Synapse synapse = new Synapse(inputNeuron, (Math.random() - 0.5) * 2, outputNeuron);
 					inputNeuron.out[outputNeuronID] = synapse;
 					outputNeuron.in[inputNeuronID] = synapse;
 				}
@@ -102,7 +102,7 @@ public class FeedForwardNN implements NeuralNetwork {
 					// Calculate weight derivative
 					Neuron inputNeuron = synapse.in;
 					double aL1 = inputNeuron.activation;
-					synapse.derivative = 2 * aL0 * aL1 * (aL0 - y) * (1 - aL0);
+					synapse.derivatives.add(2 * aL0 * aL1 * (aL0 - y) * (1 - aL0));
 
 					// Change expected value of previous layer
 					if (layerID > 1) {
@@ -111,20 +111,21 @@ public class FeedForwardNN implements NeuralNetwork {
 					}
 				}
 				// Calculate bias derivative
-				neuron.derivative = 2 * aL0 * (aL0 - y) * (1 - aL0);
+				neuron.derivatives.add(2 * aL0 * (aL0 - y) * (1 - aL0));
 			}
 		}
-
-		// Modify weights and biases by derivatives
-		for (int layerID = structure.size() - 1; layerID > 0; layerID--) {
-			ArrayList<Neuron> layer = structure.get(layerID);
-
-			for (int neuronID = 0; neuronID < layer.size(); neuronID++) {
-				Neuron neuron = layer.get(neuronID);
-				neuron.bias -= neuron.derivative * learningRate;
-
-				for (Synapse synapse : neuron.in) {
-					synapse.weight -= synapse.derivative * learningRate;
+	}
+	
+	public void applyLearning() {
+		for (ArrayList<Neuron> layer : structure) {
+			for (Neuron neuron : layer) {
+				neuron.applyDerivatives(learningRate);
+			}
+		}
+		for (int i = 0; i < structure.size() - 1; i++) {
+			for (Neuron neuron : structure.get(i)) {
+				for (Synapse synapse : neuron.out) {
+					synapse.applyDerivatives(learningRate);
 				}
 			}
 		}

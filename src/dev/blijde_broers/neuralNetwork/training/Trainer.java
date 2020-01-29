@@ -10,6 +10,7 @@ public class Trainer {
 	public int currentTrainingIndex = 0;
 	public double[] out;
 	public double error;
+	public int batchSize = 100;
 
 	public Trainer() {
 		network = new FeedForwardNN(28 * 28, 32, 32, 16, 10);
@@ -38,7 +39,7 @@ public class Trainer {
 		// error /= out.length;
 		this.error = error;
 		network.train(correctAnswer);
-		if (currentTrainingIndex % 100 == 0)
+		if (currentTrainingIndex % batchSize == 0)
 			network.applyLearning();
 		// network.train(error);
 		currentTrainingIndex++;

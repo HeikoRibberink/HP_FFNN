@@ -10,8 +10,12 @@ public class Trainer {
 	public int currentTrainingIndex = 0;
 	public double[] out;
 	public double error;
-	public static int blockSize = 10;
+	public static int blockSize = 100;
 	public static int currentBlockIndex = 0;
+
+	public double[] errors = new double[100];
+	public int errorIndex = 0;
+	public double averageError = 0;
 
 	public Trainer() {
 		network = new FeedForwardNN(28 * 28, 32, 32, 16, 10);
@@ -39,6 +43,12 @@ public class Trainer {
 		}
 		// error /= out.length;
 		this.error = error;
+		errors[errorIndex] = error;
+		errorIndex++;
+		if (errorIndex == errors.length)
+			errorIndex = 0;
+		averageError();
+
 		network.train(correctAnswer);
 		if (currentTrainingIndex % blockSize == 0) {
 			network.applyLearning();
@@ -47,5 +57,10 @@ public class Trainer {
 		// network.train(error);
 		currentTrainingIndex++;
 	}
-
+	
+	private void averageError() {
+		double sum = 0;
+		for (double d : errors) sum += d;
+		averageError = sum / errors.length;
+	}
 }

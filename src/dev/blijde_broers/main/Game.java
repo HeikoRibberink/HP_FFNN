@@ -19,7 +19,7 @@ public class Game implements Runnable {
 	private boolean running = false;
 	private Trainer trainer;
 	
-	private static final double[] LEARNING_RATE_OPTIONS = {0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001};
+	private static final double[] LEARNING_RATE_OPTIONS = {1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001};
 
 	@SuppressWarnings("unused")
 	private int fps;
@@ -118,7 +118,7 @@ public class Game implements Runnable {
 			trainer.mnistReader.data[trainer.currentTrainingIndex].display(g, 100, 100, 300, 300);
 			g.setColor(Color.white);
 //			g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer), 700, 100);
-			g.drawString(Double.toString(trainer.error), 50, 40);
+			g.drawString(Double.toString(trainer.averageError), 50, 40);
 			g.drawString(Integer.toString(trainer.currentTrainingIndex), 200, 40);
 			DecimalFormat df = new DecimalFormat("#.#####");
 			g.drawString(df.format(LEARNING_RATE_OPTIONS[currentLearningRateIndex]), 300, 40);

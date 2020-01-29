@@ -9,7 +9,7 @@ public class FeedForwardNN implements NeuralNetwork {
 	// The amount of layers in the network structure must be more than 1
 	// The first layer of the structure is just used for inputs, nothing else
 	public ArrayList<ArrayList<Neuron>> structure;
-	public double learningRate = .1;
+	public double learningRate = .001;
 	public int[] structureLayout;
 
 	public FeedForwardNN(int... structureLayout) {
@@ -109,7 +109,7 @@ public class FeedForwardNN implements NeuralNetwork {
 					// Change expected value of previous layer
 					if (layerID > 1) {
 						double w = synapse.weight;
-						inputNeuron.expectedValue += 2 * w * aL0 * (1 - aL0) * (aL0 - y) * learningRate;
+						inputNeuron.expectedValue -= 2 * w * aL0 * (1 - aL0) * (aL0 - y) * learningRate;
 					}
 				}
 				// Calculate bias derivative

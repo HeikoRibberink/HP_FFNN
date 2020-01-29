@@ -2,12 +2,14 @@ package dev.blijde_broers.neuralNetwork;
 
 import java.util.ArrayList;
 
+import dev.blijde_broers.neuralNetwork.training.Trainer;
+
 public class FeedForwardNN implements NeuralNetwork {
 
 	// The amount of layers in the network structure must be more than 1
 	// The first layer of the structure is just used for inputs, nothing else
 	public ArrayList<ArrayList<Neuron>> structure;
-	public double learningRate = .0001;
+	public double learningRate = .1;
 	public int[] structureLayout;
 
 	public FeedForwardNN(int... structureLayout) {
@@ -67,7 +69,7 @@ public class FeedForwardNN implements NeuralNetwork {
 		}
 		for (int layer = 1; layer < structure.size(); layer++) {
 			for (int neuron = 0; neuron < structure.get(layer).size(); neuron++) {
-				double sum = structure.get(layer).get(neuron).weightedSumWithActivation();
+				structure.get(layer).get(neuron).weightedSumWithActivation();
 			}
 		}
 		double[] out = new double[structure.get(structure.size() - 1).size()];
@@ -102,7 +104,7 @@ public class FeedForwardNN implements NeuralNetwork {
 					// Calculate weight derivative
 					Neuron inputNeuron = synapse.in;
 					double aL1 = inputNeuron.activation;
-					synapse.derivatives.add(2 * aL0 * aL1 * (aL0 - y) * (1 - aL0));
+					synapse.derivatives[Trainer.currentBlockIndex] = (2 * aL0 * aL1 * (aL0 - y) * (1 - aL0));
 
 					// Change expected value of previous layer
 					if (layerID > 1) {
@@ -111,7 +113,7 @@ public class FeedForwardNN implements NeuralNetwork {
 					}
 				}
 				// Calculate bias derivative
-				neuron.derivatives.add(2 * aL0 * (aL0 - y) * (1 - aL0));
+				neuron.derivatives[Trainer.currentBlockIndex] = (2 * aL0 * (aL0 - y) * (1 - aL0));
 			}
 		}
 	}

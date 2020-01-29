@@ -1,12 +1,12 @@
 package dev.blijde_broers.neuralNetwork;
 
-import java.util.ArrayList;
+import dev.blijde_broers.neuralNetwork.training.Trainer;
 
 public class Neuron {
 
 	protected Synapse[] in, out;
 	protected double bias;
-	protected ArrayList<Double> derivatives = new ArrayList<Double>();
+	protected double[] derivatives = new double[Trainer.blockSize];
 	protected double activation;
 	protected double expectedValue;
 
@@ -25,15 +25,14 @@ public class Neuron {
 	}
 
 	public void applyDerivatives(double learningRate) {
-		if (derivatives.size() == 0)
-			return;
 		double sum = 0;
-		for (double d : derivatives)
-			sum += d;
+		for (int i = 0; i < derivatives.length; i++) {
+			sum += derivatives[i];
+			derivatives[i] = 0;
+		}
 
-		double average = sum / derivatives.size();
+		double average = sum / derivatives.length;
 		bias -= average * learningRate;
-		derivatives.clear();
 	}
 
 	public double weightedSumWithActivation() {

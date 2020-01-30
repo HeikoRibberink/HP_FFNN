@@ -2,8 +2,6 @@ package dev.blijde_broers.neuralNetwork;
 
 import java.util.ArrayList;
 
-import dev.blijde_broers.neuralNetwork.training.Trainer;
-
 public class FeedForwardNN implements NeuralNetwork {
 
 	// The amount of layers in the network structure must be more than 1
@@ -12,6 +10,7 @@ public class FeedForwardNN implements NeuralNetwork {
 	public double learningRate = .001;
 	public int[] structureLayout;
 	public final int blockSize;
+	public int blockIndex = 0;
 
 	public FeedForwardNN(int blockSize, int... structureLayout) {
 		this.blockSize = blockSize;
@@ -108,7 +107,7 @@ public class FeedForwardNN implements NeuralNetwork {
 					// Calculate weight derivative
 					Neuron inputNeuron = synapse.in;
 					double aL1 = inputNeuron.activation;
-					synapse.derivatives[Trainer.currentBlockIndex] = (2 * aL0 * aL1 * (aL0 - y) * (1 - aL0));
+					synapse.derivatives[blockIndex] = (2 * aL0 * aL1 * (aL0 - y) * (1 - aL0));
 
 					// Change expected value of previous layer
 					if (layerID > 1) {
@@ -117,8 +116,14 @@ public class FeedForwardNN implements NeuralNetwork {
 					}
 				}
 				// Calculate bias derivative
-				neuron.derivatives[Trainer.currentBlockIndex] = (2 * aL0 * (aL0 - y) * (1 - aL0));
+				neuron.derivatives[blockIndex] = (2 * aL0 * (aL0 - y) * (1 - aL0));
 			}
+		}
+		
+		blockIndex++;
+		if (blockIndex == blockSize) {
+			applyLearning();
+			blockIndex = 0;
 		}
 	}
 	

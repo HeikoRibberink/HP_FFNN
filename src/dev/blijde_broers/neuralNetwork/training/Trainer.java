@@ -5,12 +5,11 @@ import dev.blijde_broers.trainingData.MNISTReader;
 
 public class Trainer {
 
-	public FeedForwardNN network = new FeedForwardNN(100, 28 * 28, 10);
+	public FeedForwardNN network = new FeedForwardNN(100, 28 * 28, 16, 16, 10);
 	public MNISTReader mnistReader;
 	public int currentTrainingIndex = 0;
 	public double[] out;
 	public double error;
-	public static int currentBlockIndex = 0;
 
 	public double[] errors = new double[network.blockSize];
 	public int errorIndex = 0;
@@ -32,10 +31,10 @@ public class Trainer {
 		if (out.length != correctAnswer.length)
 			throw new Error("Length of network output is not equal to training data set output length.");
 		for (int i = 0; i < correctAnswer.length; i++) {
-			correctAnswer[i] = 0;
+			correctAnswer[i] = 0.1;
 		}
 		correctAnswer[mnistReader.data[currentTrainingIndex].correctAnswer] = 1;
-		double error = 0;
+		double error = 0.9;
 		for (int i = 0; i < out.length; i++) {
 			error += Math.pow(out[i] - correctAnswer[i], 2);
 		}
@@ -48,10 +47,6 @@ public class Trainer {
 		averageError();
 
 		network.train(correctAnswer);
-		if (currentTrainingIndex % network.blockSize == 0) {
-			network.applyLearning();
-			currentBlockIndex = 0;
-		}
 		// network.train(error);
 		currentTrainingIndex++;
 	}

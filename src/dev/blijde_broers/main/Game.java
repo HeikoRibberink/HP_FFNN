@@ -93,7 +93,7 @@ public class Game implements Runnable {
 		}
 		if (!KeyManager.pressed[KeyEvent.VK_7] && !KeyManager.pressed[KeyEvent.VK_8]) readyForChangeKey = true;
 		if(!KeyManager.pressed[KeyEvent.VK_SPACE]) {
-			if(trainer.mnistReader.currentIndex > trainer.currentTrainingIndex) trainer.trainNext();
+			if(trainer.mnistReader.currentIndex > trainer.currentTrainingIndex + 1) trainer.trainNext();
 		}
 		if(trainer.currentTrainingIndex > 55000) {
 			trainer.currentTrainingIndex = 0;

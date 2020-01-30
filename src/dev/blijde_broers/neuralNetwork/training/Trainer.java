@@ -5,7 +5,7 @@ import dev.blijde_broers.trainingData.MNISTReader;
 
 public class Trainer {
 
-	public FeedForwardNN network = new FeedForwardNN(100, 28 * 28, 16, 16, 10);
+	public FeedForwardNN network = new FeedForwardNN(1000, 28 * 28, 16, 16, 10);
 	public MNISTReader mnistReader;
 	public int currentTrainingIndex = 0;
 	public double[] out;
@@ -14,6 +14,8 @@ public class Trainer {
 	public double[] errors = new double[network.blockSize];
 	public int errorIndex = 0;
 	public double averageError = 0;
+	
+	public double[] correctAnswers = new double[10];
 
 	public Trainer() {
 		mnistReader = new MNISTReader("src/res/datasets/train-images.idx3-ubyte",
@@ -35,6 +37,7 @@ public class Trainer {
 			correctAnswer[i] = 0;
 		}
 		correctAnswer[mnistReader.data[currentTrainingIndex].correctAnswer] = 1;
+		this.correctAnswers = correctAnswer;
 		double error = 0;
 		for (int i = 0; i < out.length; i++) {
 			error += Math.pow(out[i] - correctAnswer[i], 2);
@@ -46,7 +49,13 @@ public class Trainer {
 		if (errorIndex == errors.length)
 			errorIndex = 0;
 		averageError();
-
+		
+		System.out.println();
+		System.out.println(mnistReader.data[currentTrainingIndex].correctAnswer);
+		for (double d : correctAnswer) System.out.print(Math.round(d * 100) + "; ");
+		System.out.println();
+		for (double d : out) System.out.print(Math.round(d * 100) + "; ");
+		
 		network.train(correctAnswer);
 		// network.train(error);
 	}

@@ -19,7 +19,7 @@ public class Game implements Runnable {
 	private boolean running = false;
 	private Trainer trainer;
 	
-	private static final double[] LEARNING_RATE_OPTIONS = {1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001};
+	private static final double[] LEARNING_RATE_OPTIONS = {5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001};
 
 	@SuppressWarnings("unused")
 	private int fps;
@@ -75,7 +75,7 @@ public class Game implements Runnable {
 	}
 	
 	private boolean readyForChangeKey = true;
-	private int currentLearningRateIndex = 8;
+	private int currentLearningRateIndex = 3;
 
 	public void tick() {
 		toggleStates();
@@ -116,8 +116,7 @@ public class Game implements Runnable {
 		g.drawString(Integer.toString(TPS), 10, 40);
 		if (trainer.mnistReader.data[trainer.currentTrainingIndex] != null) {
 			trainer.mnistReader.data[trainer.currentTrainingIndex].display(g, 100, 100, 300, 300);
-			g.setColor(Color.white);
-//			g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer), 700, 100);
+			g.setColor(Color.white);		
 			g.drawString(Double.toString(trainer.averageError), 50, 40);
 			g.drawString(Integer.toString(trainer.currentTrainingIndex), 200, 40);
 			DecimalFormat df = new DecimalFormat("#.#####");
@@ -129,6 +128,9 @@ public class Game implements Runnable {
 			for (int i = 0; i < trainer.out.length; i++) {
 				g.drawString(Double.toString(Math.round(trainer.out[i] * 100)), 500, 100 + (i * 50));
 			}
+			for (int i = 0; i < trainer.correctAnswers.length; i++) {
+				g.drawString(Double.toString(Math.round(trainer.correctAnswers[i] * 100)), 600, 100 + (i * 50));
+			}
 			double[] out = trainer.out;
 			int highestValueID = 0;
 			for(int i = 0; i < 10; i++) {
@@ -136,7 +138,8 @@ public class Game implements Runnable {
 					highestValueID = i;
 				}
 			}
-			g.drawString(highestValueID + "", 700, 100);
+			g.drawString(highestValueID + "", 750, 100);
+			g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer), 700, 100);
 		}
 
 		g.dispose();

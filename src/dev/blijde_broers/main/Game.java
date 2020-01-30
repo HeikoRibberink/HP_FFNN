@@ -4,12 +4,18 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import dev.blijde_broers.input.KeyManager;
 import dev.blijde_broers.input.MouseManager;
 import dev.blijde_broers.input.MouseWheelManager;
+import dev.blijde_broers.neuralNetwork.FeedForwardNN;
 import dev.blijde_broers.neuralNetwork.training.Trainer;
 
 public class Game implements Runnable {
@@ -18,8 +24,10 @@ public class Game implements Runnable {
 	private LoadingScreen loadingScreen;
 	private boolean running = false;
 	private Trainer trainer;
-	
-	private static final double[] LEARNING_RATE_OPTIONS = {5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001};
+	private long timer;
+
+	private static final double[] LEARNING_RATE_OPTIONS = { 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002,
+			0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001 };
 
 	@SuppressWarnings("unused")
 	private int fps;
@@ -73,7 +81,7 @@ public class Game implements Runnable {
 
 	public void setup() {
 	}
-	
+
 	private boolean readyForChangeKey = true;
 	private int currentLearningRateIndex = 3;
 
@@ -91,12 +99,53 @@ public class Game implements Runnable {
 				readyForChangeKey = false;
 			}
 		}
-		if (!KeyManager.pressed[KeyEvent.VK_7] && !KeyManager.pressed[KeyEvent.VK_8]) readyForChangeKey = true;
-		if(!KeyManager.pressed[KeyEvent.VK_SPACE]) {
-			if(trainer.mnistReader.currentIndex > trainer.currentTrainingIndex + 1) trainer.trainNext();
+		if (!KeyManager.pressed[KeyEvent.VK_7] && !KeyManager.pressed[KeyEvent.VK_8]
+				&& !KeyManager.pressed[KeyEvent.VK_L] && !KeyManager.pressed[KeyEvent.VK_S])
+			readyForChangeKey = true;
+		if (!KeyManager.pressed[KeyEvent.VK_SPACE]) {
+			if (trainer.mnistReader.currentIndex > trainer.currentTrainingIndex + 1)
+				trainer.trainNext();
 		}
-		if(trainer.currentTrainingIndex > 55000) {
+		if (trainer.currentTrainingIndex > 55000) {
 			trainer.currentTrainingIndex = 0;
+		}
+		// Loading file
+		if (KeyManager.pressed[KeyEvent.VK_L] && readyForChangeKey) {
+			JFileChooser fileChooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Neural network files", "ffnn");
+			fileChooser.setFileFilter(filter);
+			int rVal = fileChooser.showOpenDialog(null);
+			if (rVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					if (fileChooser.getSelectedFile().exists()) {
+						trainer.network = FeedForwardNN.load(fileChooser.getSelectedFile().getAbsolutePath());
+					}
+				} catch (ClassNotFoundException | IOException e) {
+					e.printStackTrace();
+				}
+			}
+			readyForChangeKey = false;
+			timer = System.currentTimeMillis();
+		}
+		// Saving file
+		if (KeyManager.pressed[KeyEvent.VK_S] && readyForChangeKey) {
+			JFileChooser fileChooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Neural network files", ".ffnn");
+			fileChooser.setFileFilter(filter);
+			int rVal = fileChooser.showSaveDialog(null);
+			if (rVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					String path = fileChooser.getSelectedFile().getAbsolutePath();
+					if (!Pattern.compile("\\.ffnn$").matcher(path).lookingAt()) {
+						path += ".ffnn";
+					}
+					trainer.network.save(path);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			readyForChangeKey = false;
+			timer = System.currentTimeMillis();
 		}
 	}
 
@@ -116,12 +165,12 @@ public class Game implements Runnable {
 		g.drawString(Integer.toString(TPS), 10, 40);
 		if (trainer.mnistReader.data[trainer.currentTrainingIndex] != null) {
 			trainer.mnistReader.data[trainer.currentTrainingIndex].display(g, 100, 100, 300, 300);
-			g.setColor(Color.white);		
+			g.setColor(Color.white);
 			g.drawString(Double.toString(trainer.averageError), 50, 40);
 			g.drawString(Integer.toString(trainer.currentTrainingIndex), 200, 40);
 			DecimalFormat df = new DecimalFormat("#.#####");
 			g.drawString(df.format(LEARNING_RATE_OPTIONS[currentLearningRateIndex]), 300, 40);
-			
+
 		}
 		g.setColor(Color.white);
 		if (trainer.out != null) {
@@ -130,13 +179,14 @@ public class Game implements Runnable {
 			}
 			double[] out = trainer.out;
 			int highestValueID = 0;
-			for(int i = 0; i < 10; i++) {
-				if(out[i] > out[highestValueID]) {
+			for (int i = 0; i < 10; i++) {
+				if (out[i] > out[highestValueID]) {
 					highestValueID = i;
 				}
 			}
 			g.drawString(highestValueID + "", 750, 100);
-//			g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer), 700, 100);
+			// g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer),
+			// 700, 100);
 		}
 
 		g.dispose();
@@ -149,7 +199,7 @@ public class Game implements Runnable {
 		long lastTime = System.nanoTime();
 		double ns = 1000000000 / TPS;
 		double delta = 0;
-		long timer = System.currentTimeMillis();
+		timer = System.currentTimeMillis();
 
 		LinkedList<Long> renderTime = new LinkedList<Long>();
 		LinkedList<Long> tickTime = new LinkedList<Long>();

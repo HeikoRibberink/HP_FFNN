@@ -1,7 +1,10 @@
 package dev.blijde_broers.neuralNetwork;
 
-public class Synapse {
+import java.io.Serializable;
 
+public class Synapse implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	protected Neuron in, out;
 	protected double weight;
 	protected double[] derivatives;

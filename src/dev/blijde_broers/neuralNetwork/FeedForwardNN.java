@@ -1,13 +1,20 @@
 package dev.blijde_broers.neuralNetwork;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FeedForwardNN implements NeuralNetwork {
-
+public class FeedForwardNN implements NeuralNetwork, Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	// The amount of layers in the network structure must be more than 1
 	// The first layer of the structure is just used for inputs, nothing else
 	public ArrayList<ArrayList<Neuron>> structure;
-	public double learningRate = .001;
+	public double learningRate = 1;
 	public int[] structureLayout;
 	public final int blockSize;
 	public int blockIndex = 0;
@@ -145,5 +152,30 @@ public class FeedForwardNN implements NeuralNetwork {
 	public static double sigmoid(double in) {
 		return 1 / (1 + (Math.pow(Math.E, -in)));
 	}
-
+	
+	public void save(String path) throws IOException {
+		FileOutputStream fos = new FileOutputStream(path);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		
+		oos.writeObject(this);
+		
+		oos.close();
+		fos.close();
+	}
+	
+	public static FeedForwardNN load(String path) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(path);
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		
+		Object object = ois.readObject();
+		if (!(object instanceof FeedForwardNN)) {
+			ois.close();
+			fis.close();
+			throw new Error("File does not contain neural network.");
+		}
+		
+		ois.close();
+		fis.close();
+		return (FeedForwardNN) object;
+	}
 }

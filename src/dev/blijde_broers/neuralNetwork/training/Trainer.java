@@ -5,20 +5,18 @@ import dev.blijde_broers.trainingData.MNISTReader;
 
 public class Trainer {
 
-	public FeedForwardNN network;
+	public FeedForwardNN network = new FeedForwardNN(28 * 28, 32, 32, 16, 10);
 	public MNISTReader mnistReader;
 	public int currentTrainingIndex = 0;
 	public double[] out;
 	public double error;
-	public static int blockSize = 100;
 	public static int currentBlockIndex = 0;
 
-	public double[] errors = new double[100];
+	public double[] errors = new double[network.blockSize];
 	public int errorIndex = 0;
 	public double averageError = 0;
 
 	public Trainer() {
-		network = new FeedForwardNN(28 * 28, 32, 32, 16, 10);
 		mnistReader = new MNISTReader("src/res/datasets/train-images.idx3-ubyte",
 				"src/res/datasets/train-labels.idx1-ubyte");
 		mnistReader.readAll();
@@ -50,7 +48,7 @@ public class Trainer {
 		averageError();
 
 		network.train(correctAnswer);
-		if (currentTrainingIndex % blockSize == 0) {
+		if (currentTrainingIndex % network.blockSize == 0) {
 			network.applyLearning();
 			currentBlockIndex = 0;
 		}

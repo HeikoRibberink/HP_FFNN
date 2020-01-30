@@ -1,12 +1,10 @@
 package dev.blijde_broers.neuralNetwork;
 
-import dev.blijde_broers.neuralNetwork.training.Trainer;
-
 public class Neuron {
 
 	protected Synapse[] in, out;
 	protected double bias;
-	protected double[] derivatives = new double[Trainer.blockSize];
+	protected double[] derivatives;
 	protected double activation;
 	protected double expectedValue;
 

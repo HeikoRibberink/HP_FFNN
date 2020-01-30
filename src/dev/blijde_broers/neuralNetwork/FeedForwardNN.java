@@ -11,6 +11,7 @@ public class FeedForwardNN implements NeuralNetwork {
 	public ArrayList<ArrayList<Neuron>> structure;
 	public double learningRate = .001;
 	public int[] structureLayout;
+	public int blockSize = 10;
 
 	public FeedForwardNN(int... structureLayout) {
 		this.structureLayout = structureLayout;
@@ -20,6 +21,7 @@ public class FeedForwardNN implements NeuralNetwork {
 			structure.add(new ArrayList<Neuron>());
 			for (int neuronID = 0; neuronID < structureLayout[layerID]; neuronID++) {
 				Neuron neuron = new Neuron((Math.random() - 0.5) * 2);
+				neuron.derivatives = new double[blockSize];
 				
 				if (layerID != 0)
 					neuron.in = new Synapse[structureLayout[layerID - 1]];
@@ -38,6 +40,7 @@ public class FeedForwardNN implements NeuralNetwork {
 				for (int outputNeuronID = 0; outputNeuronID < nextLayer.size(); outputNeuronID++) {
 					Neuron outputNeuron = nextLayer.get(outputNeuronID);
 					Synapse synapse = new Synapse(inputNeuron, (Math.random() - 0.5) * 2, outputNeuron);
+					synapse.derivatives = new double[blockSize];
 					inputNeuron.out[outputNeuronID] = synapse;
 					outputNeuron.in[inputNeuronID] = synapse;
 				}

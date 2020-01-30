@@ -48,7 +48,8 @@ public class Trainer {
 		if (network.blockIndex == 0)
 			averageError();
 
-		network.train(correctAnswer);
+		if (network.learningRate > 0)
+			network.train(correctAnswer);
 		// network.train(error);
 	}
 

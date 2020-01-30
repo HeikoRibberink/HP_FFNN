@@ -27,7 +27,7 @@ public class Game implements Runnable {
 	private long timer;
 
 	private static final double[] LEARNING_RATE_OPTIONS = { 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002,
-			0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001 };
+			0.001, 0.0005, 0.0002, 0.0001, 0.00005, 0.00002, 0.00001, 0};
 
 	@SuppressWarnings("unused")
 	private int fps;

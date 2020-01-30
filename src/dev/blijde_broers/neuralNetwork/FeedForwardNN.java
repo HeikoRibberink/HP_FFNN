@@ -11,9 +11,10 @@ public class FeedForwardNN implements NeuralNetwork {
 	public ArrayList<ArrayList<Neuron>> structure;
 	public double learningRate = .001;
 	public int[] structureLayout;
-	public int blockSize = 10;
+	public final int blockSize;
 
-	public FeedForwardNN(int... structureLayout) {
+	public FeedForwardNN(int blockSize, int... structureLayout) {
+		this.blockSize = blockSize;
 		this.structureLayout = structureLayout;
 		structure = new ArrayList<ArrayList<Neuron>>();
 

@@ -125,6 +125,9 @@ public class Game implements Runnable {
 		}
 		g.setColor(Color.white);
 		if (trainer.out != null) {
+			for (int i = 0; i < trainer.out.length; i++) {
+				g.drawString(Double.toString(Math.round(trainer.out[i] * 100)), 500, 100 + (i * 50));
+			}
 			double[] out = trainer.out;
 			int highestValueID = 0;
 			for(int i = 0; i < 10; i++) {

@@ -26,6 +26,7 @@ public class Trainer {
 	}
 
 	public void trainNext() {
+		currentTrainingIndex++;
 		this.out = network.calculate(mnistReader.data[currentTrainingIndex].data);
 		double[] correctAnswer = new double[10];
 		if (out.length != correctAnswer.length)
@@ -48,7 +49,6 @@ public class Trainer {
 
 		network.train(correctAnswer);
 		// network.train(error);
-		currentTrainingIndex++;
 	}
 	
 	private void averageError() {

@@ -55,22 +55,6 @@ public class FeedForwardNN implements NeuralNetwork, Serializable {
 		}
 	}
 
-//	public static void main(String[] args) {
-//		FeedForwardNN nn = new FeedForwardNN(4, 5, 4);
-//		double[] inputs = {1,0,1,0};
-//		double[] output = {0.2,0.8,0.8,0.2};
-//		for (int i = 0; i < 100000000; i++) {
-//			double[] out = nn.calculate(inputs);
-//			nn.train(output);
-//			if (i % 1000000 == 0) {
-//				System.out.println("_______");
-//				for (double d : out) {
-//					System.out.println(d);
-//				} 
-//			}
-//		}
-//	}
-
 	@Override
 	public double[] calculate(double[] in) {
 		// Set the output of the first layer of neurons to the input

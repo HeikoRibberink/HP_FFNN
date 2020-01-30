@@ -39,7 +39,6 @@ public class Trainer {
 		for (int i = 0; i < out.length; i++) {
 			error += Math.pow(out[i] - correctAnswer[i], 2);
 		}
-		// error /= out.length;
 		this.error = error;
 		errors[errorIndex] = error;
 		errorIndex++;
@@ -50,7 +49,6 @@ public class Trainer {
 
 		if (network.learningRate > 0)
 			network.train(correctAnswer);
-		// network.train(error);
 	}
 
 	private void averageError() {

@@ -119,6 +119,7 @@ public class Game implements Runnable {
 				try {
 					if (fileChooser.getSelectedFile().exists()) {
 						trainer.network = FeedForwardNN.load(fileChooser.getSelectedFile().getAbsolutePath());
+						trainer.network.learningRate = LEARNING_RATE_OPTIONS[currentLearningRateIndex];
 					}
 				} catch (ClassNotFoundException | IOException e) {
 					e.printStackTrace();
@@ -185,8 +186,6 @@ public class Game implements Runnable {
 				}
 			}
 			g.drawString(highestValueID + "", 750, 100);
-			// g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer),
-			// 700, 100);
 		}
 
 		g.dispose();

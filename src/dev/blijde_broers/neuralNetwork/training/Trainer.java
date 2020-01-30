@@ -5,7 +5,7 @@ import dev.blijde_broers.trainingData.MNISTReader;
 
 public class Trainer {
 
-	public FeedForwardNN network = new FeedForwardNN(100, 28 * 28, 16, 16, 10);
+	public FeedForwardNN network = new FeedForwardNN(1000, 28 * 28, 16, 16, 10);
 	public MNISTReader mnistReader;
 	public int currentTrainingIndex = 0;
 	public double[] out;

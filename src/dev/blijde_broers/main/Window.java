@@ -13,6 +13,7 @@ public class Window extends JFrame {
 		setSize(width, height);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 		setTitle(title);
 		setVisible(true);
 		setLocation(new Point(0, 0));

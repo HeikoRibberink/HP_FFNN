@@ -131,7 +131,7 @@ public class Game implements Runnable {
 		// Saving file
 		if (KeyManager.pressed[KeyEvent.VK_S] && readyForChangeKey) {
 			JFileChooser fileChooser = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Neural network files", ".ffnn");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Neural network files", "ffnn");
 			fileChooser.setFileFilter(filter);
 			int rVal = fileChooser.showSaveDialog(null);
 			if (rVal == JFileChooser.APPROVE_OPTION) {

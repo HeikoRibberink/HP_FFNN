@@ -31,10 +31,10 @@ public class Trainer {
 		if (out.length != correctAnswer.length)
 			throw new Error("Length of network output is not equal to training data set output length.");
 		for (int i = 0; i < correctAnswer.length; i++) {
-			correctAnswer[i] = 0.1;
+			correctAnswer[i] = 0;
 		}
 		correctAnswer[mnistReader.data[currentTrainingIndex].correctAnswer] = 1;
-		double error = 0.9;
+		double error = 0;
 		for (int i = 0; i < out.length; i++) {
 			error += Math.pow(out[i] - correctAnswer[i], 2);
 		}

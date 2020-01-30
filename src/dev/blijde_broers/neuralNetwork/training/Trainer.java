@@ -49,12 +49,6 @@ public class Trainer {
 			errorIndex = 0;
 		averageError();
 		
-		System.out.println();
-		System.out.println(mnistReader.data[currentTrainingIndex].correctAnswer);
-		for (double d : correctAnswer) System.out.print(Math.round(d * 100) + "; ");
-		System.out.println();
-		for (double d : out) System.out.print(Math.round(d * 100) + "; ");
-		
 		network.train(correctAnswer);
 		// network.train(error);
 		currentTrainingIndex++;

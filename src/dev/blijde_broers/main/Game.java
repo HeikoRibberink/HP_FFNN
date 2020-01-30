@@ -136,7 +136,7 @@ public class Game implements Runnable {
 				}
 			}
 			g.drawString(highestValueID + "", 750, 100);
-			g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer), 700, 100);
+//			g.drawString(Integer.toString(trainer.mnistReader.data[trainer.currentTrainingIndex].correctAnswer), 700, 100);
 		}
 
 		g.dispose();

@@ -11,7 +11,7 @@ public class Trainer {
 	public double[] out;
 	public double error;
 
-	public double[] errors = new double[network.blockSize];
+	public double[] errors = new double[1000];
 	public int errorIndex = 0;
 	public double averageError = 0;
 
@@ -45,15 +45,17 @@ public class Trainer {
 		errorIndex++;
 		if (errorIndex == errors.length)
 			errorIndex = 0;
-		averageError();
+		if (network.blockIndex == 0)
+			averageError();
 
 		network.train(correctAnswer);
 		// network.train(error);
 	}
-	
+
 	private void averageError() {
 		double sum = 0;
-		for (double d : errors) sum += d;
+		for (double d : errors)
+			sum += d;
 		averageError = sum / errors.length;
 	}
 }
